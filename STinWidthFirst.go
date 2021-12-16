@@ -122,7 +122,9 @@ func server(neighboursFilePath string, isStartingPoint bool) {
 		Log(file, "Message received : "+msg +" From " + remote_addr + "\n")
 		count += 1
 		
+    
 		if parent_addr == "" && msg == "M" {
+      // if node have no parent and message is adoption request
 			Log(file, "le node n'a pas un parent \n ")
 			Log(file, "Sending message P to "+remote_addr+"\n")
 			send(node.Address, remote_addr, "P" )
@@ -130,30 +132,38 @@ func server(neighboursFilePath string, isStartingPoint bool) {
 			Log(file, "Sending message to all neighbours execpt the parent...\n")
 			sendToAllNeighboursexcept(node,parent_addr, "M")
 		}else if isStartingPoint && msg == "P" {
+      // if node is root and message is adoption accepted
 			Log(file, "\n")
 			fils=append(fils,remote_addr)
 		}else if isStartingPoint && msg == "R" {
+      // if node is root and message is adoption refused
 			Log(file, "\n")
 			non_fils=append(fils,remote_addr)
 		}else if isStartingPoint && msg == "M" {
+      // if node is root and message is adoption request
 			Log(file, "C'est le root node \n")
 			Log(file, "Sending message R  to "+remote_addr + "\n")
             send(node.Address, remote_addr, "R" )
 		}else if parent_addr != "" && msg == "M" {
+      // if node have a parent and message is adoption request
 			Log(file, "le node a déja un parent \n")
 			Log(file, "Sending message R to "+remote_addr + "\n")
 			send(node.Address, remote_addr, "R" )
 		}else if parent_addr != "" && msg == "P" {
+      // if node have a parent and message is adoption accepted
 			Log(file, "\n")
 			fils=append(fils,remote_addr)
 		}else if parent_addr != "" && msg == "R" {
+      // if node have a parent and message is adoption refused
 			Log(file, "\n")
 			non_fils=append(non_fils,remote_addr)
 		}
     
+    // Check if is root node and the termination condition is fulfilled
 		if isStartingPoint && (len(non_fils)+len(fils))==len( node.Neighbours){
 			not_terminated = false
 		}
+    // Check if is not root node and the termination condition is fulfilled
 		if !isStartingPoint && (len(non_fils)+len(fils) + 1)==len( node.Neighbours){
 			not_terminated = false
 		}
