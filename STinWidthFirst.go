@@ -101,7 +101,7 @@ func server(neighboursFilePath string, isStartingPoint bool) {
 	var parent_addr string =""
 	var fils []string 
 	var non_fils []string 
-	var BOOL bool = true
+	var not_terminated bool = true
 
 	//myLog(node.Address, "Neighbours file parsing ...")
 	//myLog(node.Address, "Done")
@@ -113,7 +113,7 @@ func server(neighboursFilePath string, isStartingPoint bool) {
 		go sendToAllNeighbours(node, "M")
 	}
 
-	for BOOL == true {
+	for not_terminated == true {
 		conn, _ := ln.Accept()
 		message, _ := bufio.NewReader(conn).ReadString('\n')
 		conn.Close()
@@ -143,7 +143,6 @@ func server(neighboursFilePath string, isStartingPoint bool) {
 			Log(file, "le node a déja un parent \n")
 			Log(file, "Sending message R to "+remote_addr + "\n")
 			send(node.Address, remote_addr, "R" )
-
 		}else if parent_addr != "" && msg == "P" {
 			Log(file, "\n")
 			fils=append(fils,remote_addr)
@@ -151,11 +150,12 @@ func server(neighboursFilePath string, isStartingPoint bool) {
 			Log(file, "\n")
 			non_fils=append(non_fils,remote_addr)
 		}
+    
 		if isStartingPoint && (len(non_fils)+len(fils))==len( node.Neighbours){
-			BOOL = false
+			not_terminated = false
 		}
 		if !isStartingPoint && (len(non_fils)+len(fils) + 1)==len( node.Neighbours){
-			BOOL = false
+			not_terminated = false
 		}
 		
 	}
