@@ -101,7 +101,7 @@ func server(neighboursFilePath string, isStartingPoint bool) {
 	var parent_addr string =""
 	var fils []string 
 	var non_fils []string 
-	var not_terminated bool = true
+	var non_term bool = true
 
 	//myLog(node.Address, "Neighbours file parsing ...")
 	//myLog(node.Address, "Done")
@@ -113,7 +113,7 @@ func server(neighboursFilePath string, isStartingPoint bool) {
 		go sendToAllNeighbours(node, "M")
 	}
 
-	for not_terminated == true {
+	for non_term == true {
 		conn, _ := ln.Accept()
 		message, _ := bufio.NewReader(conn).ReadString('\n')
 		conn.Close()
@@ -161,11 +161,11 @@ func server(neighboursFilePath string, isStartingPoint bool) {
     
     // Check if is root node and the termination condition is fulfilled
 		if isStartingPoint && (len(non_fils)+len(fils))==len( node.Neighbours){
-			not_terminated = false
+			non_term = false
 		}
     // Check if is not root node and the termination condition is fulfilled
 		if !isStartingPoint && (len(non_fils)+len(fils) + 1)==len( node.Neighbours){
-			not_terminated = false
+			non_term = false
 		}
 		
 	}
